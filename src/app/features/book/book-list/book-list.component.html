@@ -1,0 +1,54 @@
+<div class="container-md mt-2">
+    <div class="d-flex align-items-center justify-content-between">
+        <div>
+            <img src="../../../../assets/img/logo.png">
+        </div>
+        <div>
+            <app-search [placeholderMessage]="searchMessage"></app-search>
+        </div>
+    </div>
+    <div class="mb-2">
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Nouveau
+            livre</button>
+    </div>
+    <div class="card text-center">
+        <div class="card-body">
+            <p class="card-text">Vous n'avez pas de livres.</p>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Nouveau
+                livre</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Nouveau livre</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form [formGroup]="bookForm" class="row g-3">
+
+                    <div class="col-6" *ngFor="let _ctrl of formMaker">
+                        <label for="inputAddress" class="form-label">{{_ctrl.name}}</label>
+                        <input [placeholder]="_ctrl.name" *ngIf="_ctrl.type==='text'" class="form-control"
+                            [formControlName]="_ctrl.key" [name]="_ctrl.key" [type]="_ctrl.type">
+                        <select class="form-control" *ngIf="_ctrl.type === 'select'" [formControlName]="_ctrl.key">
+                            <option *ngFor="let opt of getOptions(_ctrl)" [value]="opt.value">{{opt.name}}</option>
+                        </select>
+                        <textarea class="form-control" [placeholder]="_ctrl.name" *ngIf="_ctrl.type === 'textarea'"
+                            [formControlName]="_ctrl.key"></textarea>
+                    </div>
+
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</div>

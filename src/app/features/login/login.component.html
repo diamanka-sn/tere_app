@@ -1,0 +1,38 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div id="main-wrapper">
+            <div class="row justify-content-center">
+                <div class="col-xl-10">
+                    <div class="card border-0">
+                        <div class="card-body p-0">
+                            <div class="row no-gutters">
+                                <div class="col-lg-6">
+                                    <div class="p-5">
+                                        <div class="mb-5">
+                                            <h3 class="h4 font-weight-bold text-primary">C O N N E X I O N</h3>
+                                        </div>
+                                        <form [formGroup]="loginForm" (ngSubmit)="submit()">
+                                            <div class="form-group"  *ngFor="let _ctrl of formMaker">
+                                                <label>{{_ctrl.name}}</label>
+                                                <input class="form-control"
+                                                    [placeholder]="_ctrl.name" [formControlName]="_ctrl.key" [type]="_ctrl.type" required>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary mb-2 mt-3">Connexion</button>
+                                        </form>
+                                        <hr />
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 d-none d-lg-inline-block" style="margin: auto;">
+                                    <img src="../../../assets/img/logo.png" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <p class="text-muted text-center mt-3 mb-0">Je n'ai pas de compte ? <a routerLink="/inscription"
+                            class="text-primary ml-1">Inscription</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
