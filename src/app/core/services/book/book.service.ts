@@ -74,39 +74,8 @@ export class BookService {
     return this.abstract.envoi(`utilisateurs/${id}/books`,  book)
   }
   
-  patchBook(id: string, book: any) {
-    return this.httpClient.patch(this.url + '/' + id, book).pipe(
-      tap(console.log),
-      catchError((error) => {
-        this.handleError(error);
-        return of(null);
-      })
-    )
-  }
-
-  deleteBook(id: string) {
-    return this.httpClient.delete(this.url + '/' + id).pipe(
-      tap(books => console.log(books)),
-      first(),
-    )
-  }
-
-  getMyService() {
-    return this.httpClient.get<Book[]>(this.url).pipe(
-      tap(books => console.log("before", books)),
-      switchMap((books) => this.httpClient.get(this.serviceUrl + "/" + books[0].id)),
-      tap(books => console.log("after", books)),
-    );
-  }
-
-  getbooksEtServices() {
-    combineLatest([
-      this.httpClient.get<Book[]>(this.url),
-      this.httpClient.get<any[]>(this.apiUrl + this.serviceEndpoint)
-    ]).pipe().subscribe((data) => {
-      const prod = data[0]
-      const services = data[1];
-    })
+  deleteBook(userId:number,id: number) {
+    return this.abstract.supprimer(`utilisateurs/${userId}/books/${id}`)
   }
 
   private handleError(error: any) {

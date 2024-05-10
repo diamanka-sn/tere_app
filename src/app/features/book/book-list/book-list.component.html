@@ -4,22 +4,48 @@
             <img src="../../../../assets/img/logo.png">
         </div>
         <div>
-            <app-search [placeholderMessage]="searchMessage"></app-search>
+            <app-search [placeholderMessage]="searchMessage" ></app-search>
         </div>
     </div>
     <div class="mb-2">
         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Nouveau
             livre</button>
     </div>
-    <div class="card text-center">
+    <div class="card">
         <div class="card-body">
             <div *ngIf="books?.length===0">
-                <p class="card-text">Vous n'avez pas de livres.</p>
+                <p class="card-text text-center">Vous n'avez pas de livres.</p>
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#exampleModal">Nouveau
                     livre</button>
             </div>
-
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Titre</th>
+                        <th scope="col">Auteur</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let _b of books">
+                        <th scope="row">{{_b.title}}</th>
+                        <td>{{_b.author}}</td>
+                        <td>
+                            <span class="badge" [ngClass]="{
+                              'text-bg-success': _b.status === 'waiting',
+                              'text-bg-warning': _b.status === 'inProgress',
+                              'text-bg-danger': _b.status === 'completed'
+                            }">{{ _b.status }}</span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-primary mx-2" data-bs-toggle="modal">modifier</button>
+                            <button type="button" class="btn btn-danger" (click)="supprimer(_b)">supprimer</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
         </div>
     </div>
@@ -33,6 +59,10 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
+                <div class="alert" role="alert" [ngClass]="{'alert-danger': error, 'alert-success': success}"
+                    *ngIf="error || success">
+                    {{ message }}
+                </div>
                 <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="row g-3">
                     <div class="col-6" *ngFor="let _ctrl of formMaker">
                         <label for="inputAddress" class="form-label">{{_ctrl.name}}</label>

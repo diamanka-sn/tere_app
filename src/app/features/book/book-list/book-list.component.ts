@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Subject, first, lastValueFrom, takeUntil, tap } from 'rxjs';
 import { AuthService } from 'src/app/core/services/auth.service';
 import { BookService } from 'src/app/core/services/book/book.service';
@@ -17,6 +18,11 @@ export class BookListComponent {
 
   @Input() data!: Book;
   books!: Book[];
+  success: boolean = false
+  error: boolean = false
+  isloading: boolean = false
+  message: string = ""
+  mainMessage:string = ""
   destroy$ = new Subject();
   searchMessage: string = "Rechercher un livre"
   utilisateur!: any
@@ -48,13 +54,13 @@ export class BookListComponent {
     }
   ]
 
-  constructor(private bookService: BookService, private authService: AuthService, private localSercice: LocalStorageService) {
+  constructor(private bookService: BookService, private matSnackbar: MatSnackBar, private authService: AuthService, private localSercice: LocalStorageService) {
 
   }
 
   ngOnInit(): void {
     this.getUser()
-    this.getProds();
+    this.getbooks();
 
     this.bookService.reactiveInterval$
       .pipe(
@@ -75,8 +81,12 @@ export class BookListComponent {
   }
 
   onSubmit() {
-    if (this.bookForm.valid) {
+    this.success = false
+    this.error = false
+    this.message = ""
 
+    if (this.bookForm.valid) {
+      this.isloading = true
       const formData = this.bookForm.value
       let data: Book = {
         title: formData.title?.trim()!,
@@ -84,16 +94,23 @@ export class BookListComponent {
         description: formData.description?.trim()!,
         status: formData.status!
       }
-      this.bookService.postBook(this.utilisateur.id, data).subscribe((res:any) => {
-        if(res.length>0){
-          this.getProds()
+      this.bookService.postBook(this.utilisateur.id, data).subscribe((res: any) => {
+        console.log(res)
+        if (res) {
+          this.success = true
+          this.message = "Livre ajouter avec success"
+          this.getbooks()
           this.bookForm.reset()
+          this.isloading = false
+        } else {
+          this.error = true
+          this.message = "Livre ajouter avec success"
         }
       })
     }
   }
 
-  async getProds() {
+  async getbooks() {
     try {
       this.books = await lastValueFrom(
         this.bookService.getAllBooks(this.utilisateur.id)
@@ -116,6 +133,27 @@ export class BookListComponent {
     }
     return [];
   }
+  supprimer(b: Book) {
+    const confirmation = window.confirm("Voulez vous vraiment supprimer le livre?");
+
+    if (confirmation) {
+      this.bookService.deleteBook(this.utilisateur?.id, Number(b.id)).subscribe((res: any) => {
+        if(!res){
+          this.matSnackbar.open('Livre supprimer avec succes.', 'Fermer', {
+            duration: 3000,
+          });
+          this.getbooks()
+        } else {
+          this.matSnackbar.open('Erreur lors de la suppression.', 'Fermer', {
+            duration: 3000,
+          });
+          return;
+        }
+       
+      })
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next(null);
   }
