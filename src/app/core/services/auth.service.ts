@@ -2,13 +2,14 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { AbstractService } from './abstract.service';
+import { LocalStorageService } from './utils/local-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private router: Router, private abstractService:AbstractService ) {
+  constructor(private router: Router, private abstractService: AbstractService, private localSercice:LocalStorageService) {
   }
   loginStatus$ = new BehaviorSubject(false);
 
@@ -20,15 +21,18 @@ export class AuthService {
     this.loginStatus$.next(stat);
   }
 
+  getUser(){
+    return JSON.parse(this.localSercice.getItem("user"))
+  }
+
   isLoggedIn(): boolean {
     const user = localStorage.getItem('user');
-    console.log('Guard appele', !!user);
     this.setStatus(true);
     return !!user;
   }
 
-  login(data:any) {
-   return this.abstractService.envoi('utilisateurs/login', data)
+  login(data: any) {
+    return this.abstractService.envoi('utilisateurs/login', data)
   }
 
   logout() {

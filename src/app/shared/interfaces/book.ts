@@ -1,10 +1,10 @@
 import { User } from "./user";
 
 export interface Book {
-    id: number | string;
+    id?: number | string;
     title: string;
     author: string;
-    description: Text;
+    description: string;
     status:string;
-    user:User
+    user?:User
 }
