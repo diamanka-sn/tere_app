@@ -29,6 +29,6 @@ Elle permet aux utilisateurs d'enregistrer leurs livres, de suivre leur statut d
 ## Run le projet
 
 1. `git clone https://github.com/diamanka-sn/tere_app.git`
-2. `cp api_tere`
+2. `cp tere_app`
 3. `npm i`
 4. `npm s --o`
