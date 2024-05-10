@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Observable, catchError, combineLatest, first, from, interval, map, of, retry, switchMap, take, tap } from 'rxjs';
 import { Book } from 'src/app/shared/interfaces/book';
+import { AbstractService } from '../abstract.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BookService {
   apiUrl = 'http://localhost:3000/';
-  enpdoint = 'books';
+  enpdoint = 'utilisateurs';
   serviceEndpoint = 'services';
   url = this.apiUrl + this.enpdoint;
   serviceUrl = this.apiUrl + this.serviceEndpoint;
@@ -20,8 +21,10 @@ export class BookService {
     map((x) => x + 1),
     take(1)
   );
+  user = localStorage.getItem('user');
   constructor(
     private httpClient: HttpClient,
+    private abstract:AbstractService,
     private matSnackbar: MatSnackBar
   ) { }
 
@@ -43,8 +46,8 @@ export class BookService {
   //   );
   // }
 
-  getAllBooks(): Observable<any[]> {
-    return this.httpClient.get<Book[]>(this.url).pipe(
+  getAllBooks(id:number): Observable<any[]> {
+    return this.httpClient.get<Book[]>(this.url+"/"+id+"/books").pipe(
       tap(books => console.log(books)),
       first(),
       retry(3),
@@ -56,7 +59,7 @@ export class BookService {
   }
 
   getBookById(id: string) {
-    return this.httpClient.get<Book>(this.url + '/' + id).pipe(
+    return this.httpClient.get<Book>(this.url + '/' + id+'/books').pipe(
       tap(books => console.log(books)),
       first(),
       retry(3),
@@ -67,18 +70,12 @@ export class BookService {
     );
   }
 
-  postBook(product: Book) {
-    return this.httpClient.post(this.url, product).pipe(
-      tap(console.log),
-      catchError((error) => {
-        this.handleError(error);
-        return of(null);
-      })
-    )
+  postBook(id:number,book: Book) {
+    return this.abstract.envoi(`utilisateurs/${id}/books`,  book)
   }
   
-  patchBook(id: string, product: any) {
-    return this.httpClient.patch(this.url + '/' + id, product).pipe(
+  patchBook(id: string, book: any) {
+    return this.httpClient.patch(this.url + '/' + id, book).pipe(
       tap(console.log),
       catchError((error) => {
         this.handleError(error);

@@ -30,8 +30,6 @@ export class LoginComponent {
 
   }
   submit() {
-    console.log("djsjgzsdghhg")
-
     const formData = this.loginForm.value
     const _champs = ['phone', 'password']
     const getFormDataValue = (field: string) => formData[field as keyof typeof formData] || '';

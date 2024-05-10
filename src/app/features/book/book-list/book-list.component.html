@@ -13,9 +13,14 @@
     </div>
     <div class="card text-center">
         <div class="card-body">
-            <p class="card-text">Vous n'avez pas de livres.</p>
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Nouveau
-                livre</button>
+            <div *ngIf="books?.length===0">
+                <p class="card-text">Vous n'avez pas de livres.</p>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                    data-bs-target="#exampleModal">Nouveau
+                    livre</button>
+            </div>
+
+
         </div>
     </div>
 </div>
@@ -28,8 +33,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form [formGroup]="bookForm" class="row g-3">
-
+                <form [formGroup]="bookForm" (ngSubmit)="onSubmit()" class="row g-3">
                     <div class="col-6" *ngFor="let _ctrl of formMaker">
                         <label for="inputAddress" class="form-label">{{_ctrl.name}}</label>
                         <input [placeholder]="_ctrl.name" *ngIf="_ctrl.type==='text'" class="form-control"
@@ -40,11 +44,9 @@
                         <textarea class="form-control" [placeholder]="_ctrl.name" *ngIf="_ctrl.type === 'textarea'"
                             [formControlName]="_ctrl.key"></textarea>
                     </div>
-
-
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
-                        <button type="submit" class="btn btn-primary">Ajouter</button>
+                        <button type="submit" [disabled]="bookForm.invalid" class="btn btn-primary">Ajouter</button>
                     </div>
                 </form>
             </div>
